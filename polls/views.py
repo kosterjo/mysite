@@ -1,12 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse
 from django.template import loader
 
 from .models import Question
 
 def index(request):
-	latest_question_list = Question.objects.order_by('-pub_date')[:5]
-	template = loader.get_template('polls/index.html')
+	latest_question_list = get_list_or_404(Question)[:5]
 	context = {
 	  'latest_question_list': latest_question_list
 	}
