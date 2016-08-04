@@ -42,8 +42,8 @@ def create_question(question_text, days):
 	and pub date with offset inputted date - negative 
 	dates for the past and positive for future
 	'''
-	time = timezone.now + datetime.timedelta(days=days)
-	return question.objects.create(question_text=question_text, pub_date=time)
+	time = timezone.now() + datetime.timedelta(days=days)
+	return Question.objects.create(question_text=question_text, pub_date=time)
 
 
 class QuestionViewTests(TestCase):
@@ -56,3 +56,15 @@ class QuestionViewTests(TestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, "No polls available")
 		self.assertQuerysetEqual(response.context['latest_question_list'], [])
+
+	def test_index_view_with_a_past_question(self):
+		'''
+		questions with pub date in past shoulc be displayed
+		on index page
+		'''
+		create_question(question_text="Past question", days=-30)
+		response = self.client.get(reverse('polls:index'))
+		self.assertQuerysetEqual(
+		  response.context['latest_question_list'],
+		  ['<Question: Past question>']
+		)	
