@@ -7,6 +7,16 @@ from .models import Question
 
 class QuestionMethodTests(TestCase):
 
+	def test_was_published_recently_with_recent_question(self):
+
+		'''
+		should return true for any question newer than 1 day
+		'''
+		time = timezone.now() - datetime.timedelta(hours=1)
+		recent_question = Question(pub_date=time)
+		self.assertEqual(recent_question.was_published_recently(), True)
+
+
 	def test_was_published_recently_with_future_question(self):
 		'''
 		tests that test_was_published_recently returns
@@ -18,7 +28,7 @@ class QuestionMethodTests(TestCase):
 
 	def test_was_published_recently_with_old_question(self):
 		'''
-		should return fals for any question older than 1 day
+		should return false for any question older than 1 day
 		'''
 		time = timezone.now() - datetime.timedelta(days=30)
 		old_question = Question(pub_date=time)
