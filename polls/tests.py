@@ -117,6 +117,16 @@ class QuestionIndexDetailTests(TestCase):
 		response = self.client.get(url)
 		self.assertEqual(response.status_code, 404)
 
+	def test_detail_view_with_past_question(self):
+		'''
+		detail view with a pub date in the past
+		should display question's text
+		'''
+		past_question = create_question(question_text='Past question', days=-5)
+		url = reverse('polls:detail', args=(past_question.id,))
+		response = self.client.get(url)
+		self.assertContains(response, past_question.question_text)
+
 
 
 
